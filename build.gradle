@@ -1,0 +1,16 @@
+plugins {
+	id "java"
+	id "idea"
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url "http://mvn.rx14.co.uk/shadowfacts/"
+	}
+}
+
+dependencies {
+	compile group: "net.shadowfacts", name: "ShadowLib", version: "1.6.0-SNAPSHOT"
+	compile group: "org.jsoup", name: "jsoup", version: "1.8.3"
+}
