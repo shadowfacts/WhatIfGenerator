@@ -1,5 +1,5 @@
 plugins {
-	id "java"
+	id "groovy"
 	id "idea"
 }
 
@@ -11,6 +11,8 @@ repositories {
 }
 
 dependencies {
+	compile group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.5"
+
 	compile group: "net.shadowfacts", name: "ShadowLib", version: "1.6.0-SNAPSHOT"
 	compile group: "org.jsoup", name: "jsoup", version: "1.8.3"
 }
