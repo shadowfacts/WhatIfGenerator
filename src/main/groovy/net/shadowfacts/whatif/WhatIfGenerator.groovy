@@ -6,8 +6,9 @@ package net.shadowfacts.whatif
 class WhatIfGenerator {
 
 	private def markovChain = new Hashtable<String, Vector<String>>();
+	private def rand = new Random();
 
-	private static def rand = new Random();
+	private String[] reference;
 
 	static void main(String[] args) {
 		def generator = new WhatIfGenerator()
@@ -26,7 +27,7 @@ class WhatIfGenerator {
 		def questions = new ArrayList<String>();
 		for (def i = 0; i < amount; i++) {
 			def question = generator.generateSentence()
-			if (!reference.contains(question)) {
+			if (generator.isQuestion(question)) {
 				questions.add(question)
 			} else {
 				i--;
@@ -47,6 +48,7 @@ class WhatIfGenerator {
 	}
 
 	void parseReference(String[] reference) {
+		this.reference = reference;
 		reference.each({
 			it = it.substring(0, it.length() - 1)
 			def words = it.split(" ")
@@ -90,7 +92,7 @@ class WhatIfGenerator {
 			def nextWord = startWords.get(rand.nextInt(startWordsLen))
 			newPhrase.add(nextWord)
 
-			while (nextWord.charAt(nextWord.length() - 1) != "#" && newPhrase.size() <= 40 && !nextWord.endsWith("?")) {
+			while (nextWord.charAt(nextWord.length() - 1) != '?') {
 				def wordSelection = markovChain.get(nextWord);
 				if (wordSelection != null) {
 					def wordSelectionLen = wordSelection.size();
@@ -102,6 +104,19 @@ class WhatIfGenerator {
 		}
 
 		return String.join(" ", newPhrase)
+	}
+
+	boolean isReferenceQuestion(String question) {
+		for (def s : reference) {
+			if (s.contains(question)) {
+				return true;
+			}
+		}
+		return false
+	}
+
+	boolean isQuestion(String s) {
+		return !isReferenceQuestion(s) && s.endsWith("?")
 	}
 
 }
