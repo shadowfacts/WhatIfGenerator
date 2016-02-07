@@ -25,10 +25,16 @@ class ReferenceGenerator {
 			out.close()
 
 			def doc = Jsoup.parse(f, null)
-			def elements = doc.getElementsByAttributeValue("id", "question")
-			elements.each {
-				reference.text += it.text() + "\n"
-			}
+//			def elements = doc.getElementsByAttributeValue("id", "question")
+			def elements = doc.getElementsByTag("p")
+			elements.each({
+				if (!"copyright".equals(it.attr("id")) && !"attribute".equals(it.attr("id"))) {
+					reference.text += it.text() + "\n"
+				}
+			})
+//					elements.each {
+//				reference.text += it.text() + "\n"
+//			}
 		}
 
 		return reference.text.split("\n")

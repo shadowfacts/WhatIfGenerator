@@ -50,13 +50,16 @@ class WhatIfGenerator {
 	void parseReference(String[] reference) {
 		this.reference = reference;
 		reference.each({
-			it = it.substring(0, it.length() - 1)
+			if (it.length() != 0) it = it.substring(0, it.length() - 1)
 			def words = it.split(" ")
 
 			words.eachWithIndex({ String word, int i ->
 				if ("#".equals(word) || word.empty) return;
 
-				if (i == 0) {
+				if (i == words.length - 1) {
+					def endWords = markovChain.get("_end")
+					endWords.add(word)
+				} else if (i == 0) {
 					def startWords = markovChain.get("_start")
 					startWords.add(word)
 					def suffix = markovChain.get(word)
@@ -65,9 +68,6 @@ class WhatIfGenerator {
 						suffix.add(words[i + 1])
 						markovChain.put(word, suffix)
 					}
-				} else if (i == words.length - 1) {
-					def endWords = markovChain.get("_end")
-					endWords.add(word)
 				} else {
 					def suffix = markovChain.get(word)
 					if (suffix == null) {
@@ -86,13 +86,11 @@ class WhatIfGenerator {
 	String generateSentence() {
 			def newPhrase = new Vector<String>();
 
-			def startWords = markovChain.get("_start");
-			def startWordsLen = startWords.size()
-
-			def nextWord = startWords.get(rand.nextInt(startWordsLen))
+			newPhrase.add("What")
+			def nextWord = "if"
 			newPhrase.add(nextWord)
 
-			while (nextWord.charAt(nextWord.length() - 1) != '?') {
+			while (nextWord.charAt(nextWord.length() - 1) != '?' && newPhrase.size() < 20) {
 				def wordSelection = markovChain.get(nextWord);
 				if (wordSelection != null) {
 					def wordSelectionLen = wordSelection.size();
